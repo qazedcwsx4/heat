@@ -5,6 +5,6 @@
 #ifndef HEAT_GRID_TO_BMP_H
 #define HEAT_GRID_TO_BMP_H
 
-int convert(char* input, char* output);
+int convert(const std::string& input, const std::string& output);
 
 #endif //HEAT_GRID_TO_BMP_H

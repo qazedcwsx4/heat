@@ -8,17 +8,15 @@
 
 double timeMs();
 
-void saveToFile(Grid &grid, char *filename);
+void saveToFile(Grid &grid, const char *filename);
 
-int heat(Grid &grid, char *filename) {
+int heat(Grid &grid, const std::string& filename) {
     const int sizeX = grid.sizeX;
     const int sizeY = grid.sizeY;
 
     double epsilon = 0.01;
 
     Grid previous = Grid(sizeX, sizeY);
-
-
 //
 //  iterate until the  new solution W differs from the old solution U
 //  by no more than EPSILON.
@@ -55,7 +53,7 @@ int heat(Grid &grid, char *filename) {
         }
     }
     std::cout << "total time " << timeMs() - startTime;
-    saveToFile(grid, filename);
+    saveToFile(grid, filename.c_str());
     return 0;
 }
 
@@ -94,7 +92,7 @@ double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
-void saveToFile(Grid &grid, char *filename) {
+void saveToFile(Grid &grid, const char *filename) {
     std::ofstream output;
 
     output.open(filename);

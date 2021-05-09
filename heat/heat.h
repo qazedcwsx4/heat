@@ -7,7 +7,7 @@
 #ifndef HEAT_HEAT_H
 #define HEAT_HEAT_H
 
-int heat(Grid &grid, char *filename);
+int heat(Grid &grid, const std::string& filename);
 
 void setupTest(Grid &grid);
 

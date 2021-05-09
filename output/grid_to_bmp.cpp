@@ -180,7 +180,7 @@ void BmpImage::writeHeader(ofstream &f)
 }
 //****************************************************************************80
 
-int convert(char *input, char *output)
+int convert(const std::string& input, const std::string& output)
 
 //****************************************************************************80
 //
@@ -238,7 +238,7 @@ int convert(char *input, char *output)
     cout << "GRID_TO_BMP:\n";
     cout << "  C++ version\n";
 
-    input_file = fopen(input, "r");
+    input_file = fopen(input.c_str(), "r");
 
     if (input_file == NULL) {
         cerr << "Error: unable to open the input file." << endl;
@@ -281,7 +281,7 @@ int convert(char *input, char *output)
 //
 //  Make sure we can open the output file.
 //
-    output_file = fopen(output, "w");
+    output_file = fopen(output.c_str(), "w");
 
     if (output_file == NULL) {
         cerr << "Error: unable to open output file." << endl;
@@ -300,7 +300,7 @@ int convert(char *input, char *output)
 //  Read the data, scaling each item, converting to a hue, and then
 //  converting the hue to an (R,G,B) color.
 //
-    input_file = fopen(input, "r");
+    input_file = fopen(input.c_str(), "r");
 
     if (fscanf(input_file, "%d\n", &height) != 1) {
         cerr << "Error: parse error reading input file (image size)" << endl;
