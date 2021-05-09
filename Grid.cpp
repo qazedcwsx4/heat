@@ -23,10 +23,10 @@ private:
         }
     };
 
-    int sizeX;
-    int sizeY;
     double *field;
 public:
+    const int sizeX;
+    const int sizeY;
     Grid(int sizeX, int sizeY) :
             sizeX{sizeX},
             sizeY{sizeY},
@@ -38,7 +38,6 @@ public:
             sizeY{sizeY},
             field{field} {
     }
-// [12][1234567]
     GridInner operator[](int x) {
         return {field, x, sizeY};
     }

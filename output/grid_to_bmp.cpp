@@ -208,7 +208,7 @@ int convert(char *input, char *output)
 //
 //    where "input_file" is the text file to be read, and "output_file"
 //    is the name of the BMP file to be created.  It is customary to use
-//    a file extension of ".bmp" for the BMP file.
+//    a file extension of ".output" for the BMP file.
 //
 //  Modified:
 //
