@@ -4,13 +4,12 @@
 
 #include <iomanip>
 #include "../include/cpu_calculate.h"
-#include "grid_operations.h"
 
 double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
-void calculate(Grid &grid){
+void cpuCalculate(Grid &grid){
     const int sizeX = grid.sizeX;
     const int sizeY = grid.sizeY;
 

@@ -35,3 +35,7 @@ Grid Grid::newCpu(int sizeX, int sizeY) {
 Grid Grid::newManaged(int sizeX, int sizeY) {
     return {true, sizeX, sizeY};
 }
+
+double *Grid::raw() {
+    return field;
+}

@@ -8,6 +8,6 @@
 #include <iostream>
 #include "grid.cuh"
 
-void calculate(Grid &grid);
+void cpuCalculate(Grid &grid);
 
 #endif //HEAT_HEAT_H

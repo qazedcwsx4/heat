@@ -25,6 +25,7 @@ private:
     double *field;
 
     Grid(bool isManaged, int sizeX, int sizeY);
+
 public:
     const int sizeX;
     const int sizeY;
@@ -36,6 +37,8 @@ public:
     static Grid newManaged(int sizeX, int sizeY);
 
     GridInner operator[](int x);
+
+    double *raw();
 
     ~Grid();
 };
