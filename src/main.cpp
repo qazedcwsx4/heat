@@ -1,17 +1,18 @@
+#include <grid.cuh>
+#include <grid_operations.h>
 #include <string>
-#include <test.h>
-#include "heat/heat.h"
+#include <cpu_calculate.h>
 #include "output/grid_to_bmp.h"
 
 #define SIZE_X 1000
 #define SIZE_Y 1000
 
-#define FILE_PATH "../resources/"
-
 int main() {
-//    Grid grid = Grid(SIZE_X, SIZE_Y);
-//    setupTest(grid);
-//
-//    heat(grid, FILE_PATH + std::string("grid.txt"));
-//    convert(FILE_PATH + std::string("grid.txt"), FILE_PATH + std::string("heatmap.bmp"));
+    Grid grid = Grid(SIZE_X, SIZE_Y);
+    setupTest(grid);
+
+    calculate(grid);
+    saveToFile(grid, "grid.txt");
+
+    convert("grid.txt", "heatmap.bmp");
 }

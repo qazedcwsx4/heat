@@ -7,7 +7,7 @@ find_package(CUDA REQUIRED)
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.cu)
 set(CMAKE_CUDA_STANDARD 14)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} include/grid_operations.h src/grid_operations.cpp)
 
 set_target_properties(${PROJECT_NAME}
         PROPERTIES POSITION_INDEPENDENT_CODE ON)

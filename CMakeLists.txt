@@ -18,9 +18,9 @@ add_subdirectory(modules/shared)
 add_subdirectory(modules/cpu)
 add_subdirectory(modules/gpu)
 
-add_executable(heat src/main.cpp src/Grid.cpp src/heat/heat.cpp src/output/grid_to_bmp.cpp src/output/grid_to_bmp.h src/heat/heat.h modules/gpu/main.cu)
+add_executable(heat src/main.cpp src/output/grid_to_bmp.cpp src/output/grid_to_bmp.h)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${shared_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${heat_shared_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${heat_cpu_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${heat_gpu_INCLUDE_DIRS})
 
