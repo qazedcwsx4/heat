@@ -16,7 +16,7 @@ void calculate(Grid &grid){
 
     double epsilon = 0.01;
 
-    Grid previous = Grid(sizeX, sizeY);
+    Grid previous = Grid::newCpu(sizeX, sizeY);
 //
 //  iterate until the  new solution W differs from the old solution U
 //  by no more than EPSILON.

@@ -8,11 +8,14 @@
 #define SIZE_Y 1000
 
 int main() {
-    Grid grid = Grid(SIZE_X, SIZE_Y);
+    Grid grid = Grid::newManaged(SIZE_X, SIZE_Y);
     setupTest(grid);
 
     calculate(grid);
+
     saveToFile(grid, "grid.txt");
 
     convert("grid.txt", "heatmap.bmp");
+
+    return 0;
 }

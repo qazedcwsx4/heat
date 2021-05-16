@@ -10,8 +10,8 @@ private:
     class GridInner {
     private:
         double *field;
-        int x;
-        int sizeY;
+        const int x;
+        const int sizeY;
 
     public:
         GridInner(double *field, int x, int sizeY) :
@@ -23,14 +23,21 @@ private:
     };
 
     double *field;
+
+    Grid(bool isManaged, int sizeX, int sizeY);
 public:
     const int sizeX;
     const int sizeY;
 
-    Grid(int sizeX, int sizeY);
-    Grid(int sizeX, int sizeY, double *field);
+    const bool isManaged;
+
+    static Grid newCpu(int sizeX, int sizeY);
+
+    static Grid newManaged(int sizeX, int sizeY);
 
     GridInner operator[](int x);
+
+    ~Grid();
 };
 
 #endif //HEAT_GRID_CUH
