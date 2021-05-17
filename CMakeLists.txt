@@ -27,3 +27,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${heat_gpu_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} heat_shared)
 target_link_libraries(${PROJECT_NAME} heat_cpu)
 target_link_libraries(${PROJECT_NAME} heat_gpu)
+
+
+#message("partial build commencing")
+#message("looking for header files in ${CMAKE_SOURCE_DIR}/include")
+#include_directories(${CMAKE_SOURCE_DIR}/include)
+#message("looking for precompiled binaries in ${CMAKE_SOURCE_DIR}/lib")
+#link_directories(${CMAKE_SOURCE_DIR}/lib)

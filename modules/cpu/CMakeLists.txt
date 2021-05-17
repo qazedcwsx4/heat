@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 3.17)
 
 project(heat_cpu CXX CUDA)
 
-find_package(CUDA REQUIRED)
-
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.cu)
 set(CMAKE_CUDA_STANDARD 14)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} include/thread_pool.h src/thread_pool.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${heat_shared_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} heat_shared)
