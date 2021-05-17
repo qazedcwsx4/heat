@@ -10,4 +10,6 @@
 
 void cpuCalculate(Grid &grid);
 
+void cpuCalculateParallel(Grid &grid);
+
 #endif //HEAT_HEAT_H

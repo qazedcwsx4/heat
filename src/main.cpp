@@ -11,10 +11,10 @@
 #define BLOCK_SIZE = 256
 
 int main() {
-    Grid grid = Grid::newManaged(SIZE_X, SIZE_Y);
+    Grid grid = Grid::newCpu(SIZE_X, SIZE_Y);
     setupTest(grid);
 
-    gpuCalculate(grid);
+    cpuCalculateParallel(grid);
 
     saveToFile(grid, "grid.txt");
 
