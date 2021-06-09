@@ -8,8 +8,13 @@
 #include <iostream>
 #include "grid.cuh"
 
+#define EPSILON 0.01
+#define THREAD_COUNT 1
+
 void cpuCalculate(Grid &grid);
 
 void cpuCalculateParallel(Grid &grid);
+
+void cpuCalculateParallelProper(Grid &grid);
 
 #endif //HEAT_CPU_CALCULATE_H

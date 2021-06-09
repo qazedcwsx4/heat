@@ -23,14 +23,24 @@ void saveToFile(Grid &grid, const char *filename) {
 }
 
 void setupTest(Grid &grid) {
-    // Set unchanging boundaries
-    for (int i = 1; i < grid.sizeX - 1; i++) {
+// Set unchanging boundaries
+    for (int i = 1; i < (grid.sizeX - 1) / 2; i++) {
         grid[i][0] = 100.0;
         grid[i][grid.sizeY - 1] = 0.0;
     }
-    for (int j = 0; j < grid.sizeY; j++) {
-        grid[grid.sizeX - 1][j] = 0.0;
+
+    for (int i = (grid.sizeX - 1) / 2; i < (grid.sizeX - 1); i++) {
+        grid[i][0] = 0.0;
+        grid[i][grid.sizeY - 1] = 100.0;
+    }
+    for (int j = 0; j < grid.sizeY / 2; j++) {
+        grid[grid.sizeX - 1][j] = 100.0;
         grid[0][j] = 0.0;
+    }
+
+    for (int j = grid.sizeY / 2; j < grid.sizeY; j++) {
+        grid[grid.sizeX - 1][j] = 0.0;
+        grid[0][j] = 100.0;
     }
 
     // Calculate mean of boundaries

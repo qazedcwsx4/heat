@@ -3,18 +3,17 @@
 #include <string>
 #include <gpu_calculate.cuh>
 #include <cpu_calculate.h>
+#include <thread_pool.h>
 #include "output/grid_to_bmp.h"
 
 #define SIZE_X 1000
 #define SIZE_Y 1000
 
-#define BLOCK_SIZE = 256
-
 int main() {
     Grid grid = Grid::newCpu(SIZE_X, SIZE_Y);
     setupTest(grid);
 
-    cpuCalculateParallel(grid);
+    cpuCalculateParallelProper(grid);
 
     saveToFile(grid, "grid.txt");
 
