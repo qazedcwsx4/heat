@@ -9,7 +9,7 @@
 #include "grid.cuh"
 
 #define EPSILON 0.01
-#define THREAD_COUNT 1
+#define THREAD_COUNT 8
 
 void cpuCalculate(Grid &grid);
 

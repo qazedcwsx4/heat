@@ -39,3 +39,9 @@ Grid Grid::newManaged(int sizeX, int sizeY) {
 double *Grid::raw() {
     return field;
 }
+
+void Grid::swapBuffers(Grid &other) {
+    double *tempField = this->field;
+    this->field = other.field;
+    other.field = tempField;
+}

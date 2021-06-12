@@ -3,7 +3,6 @@
 #include <string>
 #include <gpu_calculate.cuh>
 #include <cpu_calculate.h>
-#include <thread_pool.h>
 #include "output/grid_to_bmp.h"
 
 #define SIZE_X 1000

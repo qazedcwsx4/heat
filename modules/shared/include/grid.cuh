@@ -40,6 +40,8 @@ public:
 
     double *raw();
 
+    void swapBuffers(Grid &other);
+
     ~Grid();
 };
 
