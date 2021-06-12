@@ -5,8 +5,8 @@
 #include <cpu_calculate.h>
 #include "output/grid_to_bmp.h"
 
-#define SIZE_X 1000
-#define SIZE_Y 1000
+#define SIZE_X 10000
+#define SIZE_Y 10000
 
 int main() {
     Grid grid = Grid::newCpu(SIZE_X, SIZE_Y);

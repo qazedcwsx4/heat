@@ -4,11 +4,17 @@ project(heat CXX CUDA)
 set(CMAKE_CXX_STANDARD 20)
 
 message("compiler is ${CMAKE_CXX_COMPILER_ID}")
+message("default debug flags ${CMAKE_CXX_FLAGS_DEBUG}")
+message("default release flags ${CMAKE_CXX_FLAGS_RELEASE}")
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS_RELEASE "-Ox -fp:fast")
+    set(CMAKE_CXX_FLAGS_RELEASE "")
 else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
+
+message("overridden default debug flags ${CMAKE_CXX_FLAGS_DEBUG}")
+message("overridden default release flags ${CMAKE_CXX_FLAGS_RELEASE}")
 
 if (WIN32)
     set(CMAKE_SHARED_LIBRARY_PREFIX "")
