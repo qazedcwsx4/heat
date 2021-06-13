@@ -9,7 +9,7 @@
 #include <cuda_runtime_api.h>
 
 #define BLOCK_SIZE 256
-#define EPSILON 0.01
+#define EPSILON 0.000001
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-conversion"
