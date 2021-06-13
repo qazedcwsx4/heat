@@ -7,6 +7,7 @@
 
 #include <grid.cuh>
 
-void gpuCalculate(Grid &grid);
+template <typename T>
+void gpuCalculate(Grid<T> &grid);
 
 #endif //HEAT_GPU_CALCULATE_CUH

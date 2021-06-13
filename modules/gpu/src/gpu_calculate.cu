@@ -9,7 +9,7 @@
 #include <cuda_runtime_api.h>
 
 #define BLOCK_SIZE 256
-#define EPSILON 0.000001
+#define EPSILON 0.0001
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-conversion"
@@ -17,8 +17,8 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "CannotResolve"
 
-__global__
-void copy(int n, double *source, double *destination) {
+template<typename T>
+__global__ void copy(int n, T *source, T *destination) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
@@ -35,8 +35,8 @@ bool d_finished;  // TODO perf
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "CannotResolve"
 
-__global__
-void step(int n, double *current, double *previous, int wrap, double epsilon) { // TODO perf
+template<typename T>
+__global__ void step(int n, T *current, T *previous, int wrap, double epsilon) { // TODO perf
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
@@ -54,11 +54,12 @@ double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
-void gpuCalculate(Grid &grid) {
+template<typename T>
+void gpuCalculate(Grid<T> &grid) {
     const int sizeX = grid.sizeX;
     const int sizeY = grid.sizeY;
 
-    Grid previous = Grid::newManaged(sizeX, sizeY);
+    Grid<T> previous = Grid<T>::newManaged(sizeX, sizeY);
 
     int iterations = 0;
     int iterations_print = 1;
@@ -94,5 +95,8 @@ void gpuCalculate(Grid &grid) {
 
     std::cout << "total time " << timeMs() - startTime;
 }
+
+template void gpuCalculate<float>(Grid<float> &grid);
+template void gpuCalculate<double>(Grid<double> &grid);
 
 #pragma clang diagnostic pop

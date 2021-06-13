@@ -5,22 +5,25 @@
 #include <cuda_runtime_api.h>
 #include "../include/grid.cuh"
 
-Grid::Grid(bool isManaged, int sizeX, int sizeY) :
+template <typename T>
+Grid<T>::Grid(bool isManaged, int sizeX, int sizeY) :
         isManaged{isManaged},
         sizeX{sizeX},
         sizeY{sizeY} {
     if (isManaged) {
-        cudaMallocManaged((void **) (&field), sizeX * sizeY * sizeof(double));
+        cudaMallocManaged((void **) (&field), sizeX * sizeY * sizeof(T));
     } else {
-        field = new double[sizeX * sizeY];
+        field = new T[sizeX * sizeY];
     }
 }
 
-Grid::GridInner Grid::operator[](int x) {
+template <typename T>
+Grid<T>::GridInner<T> Grid<T>::operator[](int x) {
     return {field, x, sizeY};
 }
 
-Grid::~Grid() {
+template <typename T>
+Grid<T>::~Grid() {
     if (isManaged) {
         cudaFree(field);
     } else {
@@ -28,20 +31,27 @@ Grid::~Grid() {
     }
 }
 
-Grid Grid::newCpu(int sizeX, int sizeY) {
+template <typename T>
+Grid<T> Grid<T>::newCpu(int sizeX, int sizeY) {
     return {false, sizeX, sizeY};
 }
 
-Grid Grid::newManaged(int sizeX, int sizeY) {
+template <typename T>
+Grid<T> Grid<T>::newManaged(int sizeX, int sizeY) {
     return {true, sizeX, sizeY};
 }
 
-double *Grid::raw() {
+template <typename T>
+T *Grid<T>::raw() {
     return field;
 }
 
-void Grid::swapBuffers(Grid &other) {
-    double *tempField = this->field;
+template <typename T>
+void Grid<T>::swapBuffers(Grid<T> &other) {
+    T *tempField = this->field;
     this->field = other.field;
     other.field = tempField;
 }
+
+template class Grid<float>;
+template class Grid<double>;

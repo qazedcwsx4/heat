@@ -5,7 +5,8 @@
 #include <fstream>
 #include "../include/grid_operations.h"
 
-void saveToFile(Grid &grid, const char *filename) {
+template <typename T>
+void saveToFile(Grid<T> &grid, const char *filename) {
     std::ofstream output;
 
     output.open(filename);
@@ -22,7 +23,8 @@ void saveToFile(Grid &grid, const char *filename) {
     output.close();
 }
 
-void setupTest(Grid &grid) {
+template <typename T>
+void setupTest(Grid<T> &grid) {
 // Set unchanging boundaries
     for (int i = 1; i < (grid.sizeX - 1) / 2; i++) {
         grid[i][0] = 100.0;
@@ -63,3 +65,8 @@ void setupTest(Grid &grid) {
     }
 }
 
+template void setupTest<float>(Grid<float> &grid);
+template void setupTest<double>(Grid<double> &grid);
+
+template void saveToFile<float>(Grid<float> &grid, const char *filename);
+template void saveToFile<double>(Grid<double> &grid, const char *filename);

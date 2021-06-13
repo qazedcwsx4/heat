@@ -5,26 +5,28 @@
 #ifndef HEAT_GRID_CUH
 #define HEAT_GRID_CUH
 
+template <typename T>
 class Grid {
 private:
+    template <typename T>
     class GridInner {
     private:
-        double *field;
+        T *field;
         const int x;
         const int sizeY;
 
     public:
-        GridInner(double *field, int x, int sizeY) :
+        GridInner<T>(T *field, int x, int sizeY) :
                 field{field}, x{x}, sizeY{sizeY} {}
 
-        double &operator[](int y) {
+        T &operator[](int y) {
             return field[x * sizeY + y];
         }
     };
 
-    double *field;
+    T *field;
 
-    Grid(bool isManaged, int sizeX, int sizeY);
+    Grid<T>(bool isManaged, int sizeX, int sizeY);
 
 public:
     const int sizeX;
@@ -32,13 +34,13 @@ public:
 
     const bool isManaged;
 
-    static Grid newCpu(int sizeX, int sizeY);
+    static Grid<T> newCpu(int sizeX, int sizeY);
 
-    static Grid newManaged(int sizeX, int sizeY);
+    static Grid<T> newManaged(int sizeX, int sizeY);
 
-    GridInner operator[](int x);
+    GridInner<T> operator[](int x);
 
-    double *raw();
+    T *raw();
 
     void swapBuffers(Grid &other);
 

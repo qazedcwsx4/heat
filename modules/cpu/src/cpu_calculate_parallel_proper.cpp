@@ -15,7 +15,8 @@ double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
-void step(int thread, int total, double *current, double *previous, int wrap, double epsilon) {
+template<typename T>
+void step(int thread, int total, T *current, T *previous, int wrap, double epsilon) {
     for (int i = thread; i < total; i += THREAD_COUNT) {
         if (previous[i] != 0.0 && previous[i] != 100.0) {
             current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
@@ -26,7 +27,8 @@ void step(int thread, int total, double *current, double *previous, int wrap, do
     }
 }
 
-void doWork(int thread, int total, Grid &current, Grid &previous) {
+template<typename T>
+void doWork(int thread, int total, Grid<T> &current, Grid<T> &previous) {
     int iterations = 0;
     int iterations_print = 1;
     double startTime = timeMs();
@@ -52,15 +54,16 @@ void doWork(int thread, int total, Grid &current, Grid &previous) {
     }
 }
 
-void cpuCalculateParallelProper(Grid &grid) {
+template<typename T>
+void cpuCalculateParallelProper(Grid<T> &grid) {
     int total = (grid.sizeX * grid.sizeY);
-    Grid previous = Grid::newCpu(grid.sizeX, grid.sizeY);
+    Grid<T> previous = Grid<T>::newCpu(grid.sizeX, grid.sizeY);
 
     double startTime = timeMs();
 
     auto *workerThreads = new std::thread[THREAD_COUNT];
     for (int i = 0; i < THREAD_COUNT; i++) {
-        workerThreads[i] = std::thread(doWork, i, total, std::ref(grid), std::ref(previous));
+        workerThreads[i] = std::thread([=, &grid, &previous]() { doWork(i, total, grid, previous); });
     }
     for (int i = 0; i < THREAD_COUNT; i++) {
         workerThreads[i].join();
@@ -68,3 +71,7 @@ void cpuCalculateParallelProper(Grid &grid) {
 
     std::cout << "total time " << timeMs() - startTime;
 }
+
+template void cpuCalculateParallelProper<float>(Grid<float> &grid);
+
+template void cpuCalculateParallelProper<double>(Grid<double> &grid);

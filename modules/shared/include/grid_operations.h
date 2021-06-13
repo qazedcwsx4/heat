@@ -7,8 +7,10 @@
 
 #include "grid.cuh"
 
-void saveToFile(Grid &grid, const char *filename);
+template <typename T>
+void saveToFile(Grid<T> &grid, const char *filename);
 
-void setupTest(Grid &grid);
+template <typename T>
+void setupTest(Grid<T> &grid);
 
 #endif //HEAT_GRID_OPERATIONS_H

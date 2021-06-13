@@ -5,14 +5,14 @@
 #include <cpu_calculate.h>
 #include "output/bmp_converter.h"
 
-#define SIZE_X 100
-#define SIZE_Y 100
+#define SIZE_X 1000
+#define SIZE_Y 1000
 
 int main() {
-    Grid grid = Grid::newManaged(SIZE_X, SIZE_Y);
+    Grid grid = Grid<float>::newCpu(SIZE_X, SIZE_Y);
     setupTest(grid);
 
-    gpuCalculate(grid);
+    cpuCalculateParallelProper(grid);
 
     saveToFile(grid, "grid.txt");
 

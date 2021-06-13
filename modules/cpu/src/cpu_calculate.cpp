@@ -10,11 +10,12 @@ double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
-void cpuCalculate(Grid &grid) {
+template<typename T>
+void cpuCalculate(Grid<T> &grid) {
     const int sizeX = grid.sizeX;
     const int sizeY = grid.sizeY;
 
-    Grid previous = Grid::newCpu(sizeX, sizeY);
+    Grid<T> previous = Grid<T>::newCpu(sizeX, sizeY);
 //
 //  iterate until the  new solution W differs from the old solution U
 //  by no more than EPSILON.
@@ -52,3 +53,6 @@ void cpuCalculate(Grid &grid) {
     }
     std::cout << "total time " << timeMs() - startTime;
 }
+
+template void cpuCalculate<float>(Grid<float> &grid);
+template void cpuCalculate<double>(Grid<double> &grid);
