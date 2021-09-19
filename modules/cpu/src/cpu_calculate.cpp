@@ -1,58 +1,77 @@
 //
-// Created by qaze on 12.05.2021.
+// Created by qaze on 20.05.2021.
 //
 
-#include <iomanip>
 #include <thread>
+#include <mutex>
+#include <iomanip>
 #include "../include/cpu_calculate.h"
+#include <barrier>
+
+bool finished = false;
+std::barrier barrier(THREAD_COUNT);
 
 double timeMs() {
     return (double) clock() / (double) CLOCKS_PER_SEC;
 }
 
 template<typename T>
-void cpuCalculate(Grid<T> &grid) {
-    const int sizeX = grid.sizeX;
-    const int sizeY = grid.sizeY;
+void step(int thread, int total, T *current, T *previous, int wrap, double epsilon) {
+    for (int i = thread; i < total; i += THREAD_COUNT) {
+        if (previous[i] != 0.0 && previous[i] != 100.0) {
+            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
+        } else {
+            current[i] = previous[i];
+        }
+        if (fabs(current[i] - previous[i]) > epsilon) finished = false;
+    }
+}
 
-    Grid<T> previous = Grid<T>::newCpu(sizeX, sizeY);
-//
-//  iterate until the  new solution W differs from the old solution U
-//  by no more than EPSILON.
-//
+template<typename T>
+void doWork(int thread, int total, Grid<T> &current, Grid<T> &previous) {
     int iterations = 0;
     int iterations_print = 1;
     double startTime = timeMs();
 
-    double current_difference = EPSILON;
-    while (EPSILON <= current_difference) {
-// copy current to previous
-        for (int i = 0; i < sizeY; i++) {
-            for (int j = 0; j < sizeY; j++) {
-                previous[i][j] = grid[i][j];
-            }
+    while (!finished) {
+        if (thread == 0) {
+            current.swapBuffers(previous);
         }
+        barrier.arrive_and_wait();
 
-        current_difference = 0.0;
-        for (int i = 1; i < sizeX - 1; i++) {
-            for (int j = 1; j < sizeY - 1; j++) {
-                grid[i][j] = (previous[i - 1][j] + previous[i + 1][j] + previous[i][j - 1] + previous[i][j + 1]) / 4.0;
+        finished = true;
 
-                if (current_difference < fabs(grid[i][j] - previous[i][j])) {
-                    current_difference = fabs(grid[i][j] - previous[i][j]);
-                }
+        step(thread, total, current.raw(), previous.raw(), current.sizeY, EPSILON);
+        barrier.arrive_and_wait();
+
+        if (thread == 0) {
+            iterations++;
+            if (iterations == iterations_print) {
+                std::cout << "  " << std::setw(8) << iterations << " " << timeMs() - startTime << "\n";
+                iterations_print = 2 * iterations_print;
             }
-        }
-
-        iterations++;
-        if (iterations == iterations_print) {
-            std::cout << "  " << std::setw(8) << iterations
-                      << "  " << current_difference << "\n";
-            iterations_print = 2 * iterations_print;
         }
     }
+}
+
+template<typename T>
+void cpuCalculate(Grid<T> &grid) {
+    int total = (grid.sizeX * grid.sizeY);
+    Grid<T> previous = Grid<T>::newCpu(grid.sizeX, grid.sizeY);
+
+    double startTime = timeMs();
+
+    auto *workerThreads = new std::thread[THREAD_COUNT];
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        workerThreads[i] = std::thread([=, &grid, &previous]() { doWork(i, total, grid, previous); });
+    }
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        workerThreads[i].join();
+    }
+
     std::cout << "total time " << timeMs() - startTime;
 }
 
 template void cpuCalculate<float>(Grid<float> &grid);
+
 template void cpuCalculate<double>(Grid<double> &grid);

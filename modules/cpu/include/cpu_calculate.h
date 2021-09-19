@@ -14,10 +14,4 @@
 template <typename T>
 void cpuCalculate(Grid<T> &grid);
 
-template <typename T>
-void cpuCalculateParallel(Grid<T> &grid);
-
-template <typename T>
-void cpuCalculateParallelProper(Grid<T> &grid);
-
 #endif //HEAT_CPU_CALCULATE_H
