@@ -18,8 +18,9 @@ protected:
     int chunkStart;
     int chunkSize;
     Synchronisation barrier;
+    bool leader;
 
-    ComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize);
+    ComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader);
 
 public:
 

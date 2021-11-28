@@ -10,19 +10,11 @@
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
                                           Synchronisation barrier,
-                                          int chunkStart, int chunkSize):
-        ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize) {
-    int total = (grid.sizeX * grid.sizeY);
-
-    double startTime = timeMs();
-
+                                          int chunkStart, int chunkSize, bool leader):
+        ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
     for (int i = 0; i < THREAD_COUNT; i++) {
-        threads[i] = std::thread([=, &grid, &previous]() { doWork(i, total, grid, previous); });
+        threads[i] = std::thread([=, this]() { doWork(i); });
     }
-    for (int i = 0; i < THREAD_COUNT; i++) {
-        threads[i].join();
-    }
-    std::cout << "total time " << timeMs() - startTime;
 }
 
 template<typename T>
@@ -31,7 +23,7 @@ CpuComputationUnit<T>::~CpuComputationUnit() {
 }
 
 template<typename T>
-void CpuComputationUnit<T>::doWork(int thread, int total, Grid<T> &current, Grid<T> &previous) {
+void CpuComputationUnit<T>::doWork(int thread) {
     int iterations = 0;
     int iterations_print = 1;
     double startTime = timeMs();
@@ -39,14 +31,16 @@ void CpuComputationUnit<T>::doWork(int thread, int total, Grid<T> &current, Grid
     finished = false;
 
     while (!finished) {
-        if (thread == 0) {
-            current.swapBuffers(previous);
+        // buffers are swapped by overseer
+        if (this->leader && thread == 0) {
+            this->grid.swapBuffers(this->previous);
         }
         this->barrier.synchronise();
 
         finished = true;
 
-        internalStep(thread, total, current.raw(), previous.raw(), current.sizeY, EPSILON);
+        internalStep(thread);
+        if (iterations > 2000) finished= true;
         this->barrier.synchronise();
 
         if (thread == 0) {
@@ -60,15 +54,29 @@ void CpuComputationUnit<T>::doWork(int thread, int total, Grid<T> &current, Grid
 }
 
 template<typename T>
-void CpuComputationUnit<T>::internalStep(int thread, int total, T *current, T *previous, int wrap, double epsilon) {
-    for (int i = thread; i < total; i += THREAD_COUNT) {
-        if (previous[i] != 0.0 && previous[i] != 100.0) {
-            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
+void CpuComputationUnit<T>::internalStep(int thread) {
+    auto previous = this->previous.raw();
+    auto current = this->grid.raw();
+
+    int start = this->chunkStart + thread;
+    int finish = this->chunkStart + this->chunkSize;
+
+    for (int i = start; i < finish; i += THREAD_COUNT) {
+        if (!this->grid.isBorder(i)) {
+            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - this->grid.sizeY] + previous[i + this->grid.sizeY]) / 4.0;
         } else {
             current[i] = previous[i];
         }
-        if (fabs(current[i] - previous[i]) > epsilon) finished = false;
+        if (fabs(current[i] - previous[i]) > EPSILON) finished = false;
     }
+}
+
+template<typename T>
+void CpuComputationUnit<T>::await() {
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        threads[i].join();
+    }
+    std::cout << "total time " << timeMs();
 }
 
 template class CpuComputationUnit<float>;

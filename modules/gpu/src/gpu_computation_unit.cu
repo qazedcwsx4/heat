@@ -16,8 +16,8 @@ __device__
 bool d_finished;  // TODO perf
 
 template<typename T>
-GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize)
-        :ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize) {
+GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader)
+        :ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
 
     const int sizeX = grid.sizeX;
     const int sizeY = grid.sizeY;

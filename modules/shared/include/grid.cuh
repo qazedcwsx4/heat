@@ -31,6 +31,7 @@ private:
 public:
     const int sizeX;
     const int sizeY;
+    const int totalSize;
 
     const bool isManaged;
 
@@ -43,6 +44,8 @@ public:
     T *raw();
 
     void swapBuffers(Grid &other);
+
+    bool isBorder(int i);
 
     ~Grid();
 };

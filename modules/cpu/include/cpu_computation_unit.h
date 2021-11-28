@@ -18,12 +18,14 @@ private:
     bool finished = false;
     std::thread threads[THREAD_COUNT];
 
-    void doWork(int thread, int total, Grid<T> &current, Grid<T> &previous);
+    void doWork(int thread);
 
-    void internalStep(int thread, int total, T *current, T *previous, int wrap, double epsilon);
+    void internalStep(int thread);
 
 public:
-    CpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize);
+    CpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader);
+
+    void await();
 
     ~CpuComputationUnit();
 };

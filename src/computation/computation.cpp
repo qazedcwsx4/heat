@@ -13,10 +13,16 @@ template<typename T>
 Computation<T> Computation<T>::newCpuComputation(Grid<T> &grid) {
     Grid<T> previous = Grid<T>::newCpu(grid.sizeX, grid.sizeY);
 
-    int threads = 8;
+    int threads = 16;
     Synchronisation barrier(threads);
 
-    return Computation<T>(grid, {CpuComputationUnit<T>(grid, previous, barrier, 0, 0)});
+    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize / 2, true);
+    auto cu2 = CpuComputationUnit<T>(grid, previous, barrier, grid.totalSize / 2, grid.totalSize / 2, false);
+
+    cu1.await();
+    cu2.await();
+
+    return Computation<T>(grid, {cu1, cu2});
 }
 
 template<typename T>
@@ -26,7 +32,7 @@ Computation<T> Computation<T>::newGpuComputation(Grid<T> &grid) {
     int threads = 1;
     Synchronisation barrier(threads);
 
-    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, 0)});
+    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, 0, true)});
 }
 
 template class Computation<float>;

@@ -14,7 +14,7 @@ private:
     bool finished = false;
 
 public:
-    GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize);
+    GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader);
 
     ~GpuComputationUnit();
 };
