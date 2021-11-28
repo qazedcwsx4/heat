@@ -1,16 +1,11 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(heat_shared CXX CUDA)
+project(heat_synchronisation CXX)
 
-find_package(CUDA REQUIRED)
-
-file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.cu)
-set(CMAKE_CUDA_STANDARD 14)
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.cu src/*.h)
+set(CMAKE_CXX_STANDARD 20)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${heat_synchronisation_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} heat_synchronisation)
 
 set_target_properties(${PROJECT_NAME}
         PROPERTIES POSITION_INDEPENDENT_CODE ON)

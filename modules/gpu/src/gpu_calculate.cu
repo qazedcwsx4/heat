@@ -7,6 +7,7 @@
 #include <cuda_device_runtime_api.h>
 #include <iomanip>
 #include <cuda_runtime_api.h>
+#include <util.h>
 
 #define BLOCK_SIZE 256
 #define EPSILON 0.0001
@@ -49,10 +50,6 @@ __global__ void step(int n, T *current, T *previous, int wrap, double epsilon) {
 }
 
 #pragma clang diagnostic pop
-
-double timeMs() {
-    return (double) clock() / (double) CLOCKS_PER_SEC;
-}
 
 template<typename T>
 void gpuCalculate(Grid<T> &grid) {

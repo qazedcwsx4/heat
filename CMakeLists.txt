@@ -20,16 +20,19 @@ if (WIN32)
     set(CMAKE_SHARED_LIBRARY_PREFIX "")
 endif ()
 
+add_subdirectory(modules/synchronisation)
 add_subdirectory(modules/shared)
 add_subdirectory(modules/cpu)
 add_subdirectory(modules/gpu)
 
-add_executable(heat src/main.cpp src/output/bmp_converter.cpp src/output/bmp_converter.h)
+add_executable(heat src/main.cpp src/output/bmp_converter.cpp src/output/bmp_converter.h src/computation/computation.cpp src/computation/computation.h)
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${heat_synchronisation_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${heat_shared_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${heat_cpu_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${heat_gpu_INCLUDE_DIRS})
 
+target_link_libraries(${PROJECT_NAME} heat_synchronisation)
 target_link_libraries(${PROJECT_NAME} heat_shared)
 target_link_libraries(${PROJECT_NAME} heat_cpu)
 target_link_libraries(${PROJECT_NAME} heat_gpu)

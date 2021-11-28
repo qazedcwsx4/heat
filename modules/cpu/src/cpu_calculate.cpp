@@ -7,13 +7,10 @@
 #include <iomanip>
 #include "../include/cpu_calculate.h"
 #include <barrier>
+#include <util.h>
 
 bool finished = false;
 std::barrier barrier(THREAD_COUNT);
-
-double timeMs() {
-    return (double) clock() / (double) CLOCKS_PER_SEC;
-}
 
 template<typename T>
 void step(int thread, int total, T *current, T *previous, int wrap, double epsilon) {
