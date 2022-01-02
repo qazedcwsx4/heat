@@ -11,7 +11,7 @@ int main() {
     Grid grid = Grid<float>::newManaged(SIZE_X, SIZE_Y);
     setupTest(grid);
 
-    Computation<float>::newGpuComputation(grid);
+    Computation<float>::newHybridComputation(grid);
     //cpuCalculate(grid);
 
     saveToFile(grid, "grid.txt");

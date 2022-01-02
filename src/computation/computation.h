@@ -21,6 +21,8 @@ public:
     static Computation<T> newCpuComputation(Grid<T>& grid);
 
     static Computation<T> newGpuComputation(Grid<T>& grid);
+
+    static Computation<T> newHybridComputation(Grid<T>& grid);
 };
 
 #endif //HEAT_COMPUTATION_H

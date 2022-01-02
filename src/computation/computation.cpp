@@ -32,7 +32,22 @@ Computation<T> Computation<T>::newGpuComputation(Grid<T> &grid) {
     int threads = 1;
     Synchronisation barrier(threads);
 
-    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, 0, true)});
+    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize, true)});
+}
+
+template<typename T>
+Computation<T> Computation<T>::newHybridComputation(Grid<T> &grid) {
+    Grid<T> previous = Grid<T>::newManaged(grid.sizeX, grid.sizeY);
+
+    int threads = 9;
+    Synchronisation barrier(threads);
+
+    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize / 2, false);
+
+    auto cu2 = GpuComputationUnit<T>(grid, previous, barrier, grid.totalSize / 2, grid.totalSize / 2, true);
+    cu1.await();
+
+    return Computation<T>(grid, {cu1, cu2});
 }
 
 template class Computation<float>;

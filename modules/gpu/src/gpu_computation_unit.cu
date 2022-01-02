@@ -10,7 +10,7 @@
 #include <iomanip>
 
 #define BLOCK_SIZE 256
-#define EPSILON 0.0001
+#define EPSILON 0.01
 
 __device__
 bool d_finished;  // TODO perf
@@ -19,16 +19,15 @@ template<typename T>
 GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader)
         :ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
 
-    const int sizeX = grid.sizeX;
-    const int sizeY = grid.sizeY;
-
     int iterations = 0;
     int iterations_print = 1;
     double startTime = timeMs();
     bool h_finished = true;
 
-    int blockCount = (sizeX * sizeY + BLOCK_SIZE - 1) / BLOCK_SIZE;
-    std::cout << "block count: " << blockCount << std::endl;
+    int copyBlockCount = (grid.totalSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int stepBlockCount = (chunkSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    std::cout << "copy block count: " << copyBlockCount << std::endl;
+    std::cout << "step block count: " << stepBlockCount << std::endl;
 
     cudaDeviceProp prop;
     cudaGetDeviceProperties(&prop, 0);
@@ -36,14 +35,18 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
     printf("Device name: %s\n", prop.name);
 
 
-    do {
-        copy<<<blockCount, BLOCK_SIZE>>>(sizeX * sizeY, grid.raw(), previous.raw());
+    for (int i = 0; i < 1000; ++i) {
+        if (leader) {
+            copy<<<copyBlockCount, BLOCK_SIZE>>>(grid.totalSize, grid.raw(), previous.raw());
+        }
+
         cudaDeviceSynchronize();
         barrier.synchronise();
+
         h_finished = true;
         cudaMemcpyToSymbol(d_finished, &h_finished, sizeof(bool));
 
-        step<<<blockCount, BLOCK_SIZE>>>(sizeX * sizeY, grid.raw(), previous.raw(), sizeY, EPSILON);
+        step<<<stepBlockCount, BLOCK_SIZE>>>(chunkStart + chunkSize, grid.raw(), previous.raw(), grid.sizeY, chunkStart, EPSILON);
 
         iterations++;
         if (iterations == iterations_print) {
@@ -51,10 +54,16 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
             iterations_print = 2 * iterations_print;
         }
 
-        cudaMemcpyFromSymbol(&h_finished, d_finished, sizeof(bool));
         cudaDeviceSynchronize();
         barrier.synchronise();
-    } while (!h_finished);
+
+        // CPU HERE
+
+        cudaMemcpyFromSymbol(&h_finished, d_finished, sizeof(bool));
+
+        cudaDeviceSynchronize();
+        barrier.synchronise();
+    }
 
     std::cout << "total time " << timeMs() - startTime;
 }
@@ -70,8 +79,8 @@ __global__ void copy(int n, T *source, T *destination) {
 }
 
 template<typename T>
-__global__ void step(int n, T *current, T *previous, int wrap, double epsilon) { // TODO perf
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void step(int n, T *current, T *previous, int wrap, int start, double epsilon) { // TODO perf
+    int index = start + blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
     for (int i = index; i < n; i += stride) {

@@ -30,17 +30,20 @@ void CpuComputationUnit<T>::doWork(int thread) {
 
     finished = false;
 
-    while (!finished) {
+    for (int i = 0; i < 1000; ++i) {
         // buffers are swapped by overseer
         if (this->leader && thread == 0) {
             this->grid.swapBuffers(this->previous);
         }
         this->barrier.synchronise();
 
+        // GPU here
+
+        this->barrier.synchronise();
+
         finished = true;
 
         internalStep(thread);
-        if (iterations > 2000) finished= true;
         this->barrier.synchronise();
 
         if (thread == 0) {
