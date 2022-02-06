@@ -78,7 +78,6 @@ void CpuComputationUnit<T>::await() {
     for (int i = 0; i < THREAD_COUNT; i++) {
         threads[i].join();
     }
-    std::cout << "total time " << timeMs();
 }
 
 template class CpuComputationUnit<float>;
