@@ -7,9 +7,7 @@
 
 #include <computation_unit.h>
 #include <thread>
-
-#define EPSILON 0.01
-#define THREAD_COUNT 8
+#include "consts.h"
 
 template<typename T>
 class CpuComputationUnit : public ComputationUnit<T> {

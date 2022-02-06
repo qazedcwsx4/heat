@@ -5,8 +5,8 @@
 #include "../include/cpu_computation_unit.h"
 #include <iomanip>
 #include <iostream>
-#include <util.h>
 #include <cmath>
+#include <chrono>
 
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
@@ -14,7 +14,7 @@ CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
                                           int chunkStart, int chunkSize, bool leader):
         ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
     for (int i = 0; i < THREAD_COUNT; i++) {
-        threads[i] = std::thread([=, this]() { doWork(i); });
+        threads[i] = std::thread([=]() { doWork(i); });
     }
 }
 
@@ -27,7 +27,7 @@ template<typename T>
 void CpuComputationUnit<T>::doWork(int thread) {
     int iterations = 0;
     int iterations_print = 1;
-    double startTime = timeMs();
+    auto start = std::chrono::high_resolution_clock::now();
 
     finished = false;
 
@@ -43,7 +43,9 @@ void CpuComputationUnit<T>::doWork(int thread) {
         if (thread == 0) {
             iterations++;
             if (iterations == iterations_print) {
-                std::cout << "  " << std::setw(8) << iterations << " " << timeMs() - startTime << "\n";
+                auto end = std::chrono::high_resolution_clock::now();
+                std::cout << "  " << std::setw(8) << iterations << " "
+                          << std::chrono::duration<double, std::milli>(end - start).count() << "\n";
                 iterations_print = 2 * iterations_print;
             }
         }

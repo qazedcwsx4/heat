@@ -2,15 +2,12 @@
 // Created by qaze on 01.11.2021.
 //
 
-#include <util.h>
 #include <iostream>
 #include "../include/gpu_computation_unit.cuh"
+#include "consts.h"
 #include <cuda_runtime_api.h>
 #include <cuda_device_runtime_api.h>
 #include <iomanip>
-
-#define BLOCK_SIZE 256
-#define EPSILON 0.01
 
 __device__
 bool d_finished;  // TODO perf
@@ -42,9 +39,6 @@ template<typename T>
 GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader)
         :ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
 
-    int iterations = 0;
-    int iterations_print = 1;
-    double startTime = timeMs();
     bool h_finished = true;
 
     int copyBlockCount = (grid.totalSize + BLOCK_SIZE - 1) / BLOCK_SIZE;

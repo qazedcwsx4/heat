@@ -40,7 +40,7 @@ Grid<T>::~Grid() {
     if (isManaged) {
         cudaFree(field);
     } else {
-        delete field;
+        delete[] field;
     }
 }
 

@@ -4,7 +4,7 @@
 #include <iostream>
 #include "output/bmp_converter.h"
 #include "computation/computation.h"
-#include "util.h"
+#include <chrono>
 
 #define SIZE_X 400
 #define SIZE_Y 400
@@ -17,7 +17,6 @@ int main() {
     //cpuCalculate(grid);
 
     saveToFile(grid, "grid.txt");
-
     convert("grid.txt", "heatmap.bmp");
 
     return 0;
