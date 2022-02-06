@@ -14,16 +14,14 @@ template<typename T>
 Computation<T> Computation<T>::newCpuComputation(Grid<T> &grid) {
     Grid<T> previous = Grid<T>::newCpu(grid.sizeX, grid.sizeY);
 
-    int threads = 16;
+    int threads = THREAD_COUNT;
     Synchronisation barrier(threads);
 
-    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize / 2, true);
-    auto cu2 = CpuComputationUnit<T>(grid, previous, barrier, grid.totalSize / 2, grid.totalSize / 2, false);
+    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize, true);
 
     cu1.await();
-    cu2.await();
 
-    return Computation<T>(grid, {cu1, cu2});
+    return Computation<T>(grid, {cu1});
 }
 
 template<typename T>
@@ -40,11 +38,10 @@ template<typename T>
 Computation<T> Computation<T>::newHybridComputation(Grid<T> &grid) {
     Grid<T> previous = Grid<T>::newManaged(grid.sizeX, grid.sizeY);
 
-    int threads = 9;
+    int threads = THREAD_COUNT + 1;
     Synchronisation barrier(threads);
 
     auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize / 2, false);
-
     auto cu2 = GpuComputationUnit<T>(grid, previous, barrier, grid.totalSize / 2, grid.totalSize / 2, true);
     cu1.await();
 
