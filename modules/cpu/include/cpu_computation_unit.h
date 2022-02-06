@@ -6,7 +6,6 @@
 #define HEAT_CPU_COMPUTATION_UNIT_H
 
 #include <computation_unit.h>
-#include <barrier>
 #include <thread>
 
 #define EPSILON 0.01

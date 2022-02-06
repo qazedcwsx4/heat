@@ -8,18 +8,18 @@
 template <typename T>
 class Grid {
 private:
-    template <typename T>
+    template <typename G>
     class GridInner {
     private:
-        T *field;
+        G *field;
         const int x;
         const int sizeY;
 
     public:
-        GridInner<T>(T *field, int x, int sizeY) :
+        GridInner<G>(G *field, int x, int sizeY) :
                 field{field}, x{x}, sizeY{sizeY} {}
 
-        T &operator[](int y) {
+        G &operator[](int y) {
             return field[x * sizeY + y];
         }
     };

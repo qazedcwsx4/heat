@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <util.h>
+#include <cmath>
 
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,

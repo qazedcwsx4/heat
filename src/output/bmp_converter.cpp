@@ -8,7 +8,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <tuple>
 #include "bmp_converter.h"
+#include <cmath>
 
 using std::vector;
 

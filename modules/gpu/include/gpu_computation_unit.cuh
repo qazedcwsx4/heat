@@ -6,7 +6,6 @@
 #define HEAT_GPU_COMPUTATION_UNIT_H
 
 #include <computation_unit.h>
-#include <barrier>
 
 template<typename T>
 class GpuComputationUnit : public ComputationUnit<T> {

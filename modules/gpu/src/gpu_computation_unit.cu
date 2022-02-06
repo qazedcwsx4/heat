@@ -16,6 +16,29 @@ __device__
 bool d_finished;  // TODO perf
 
 template<typename T>
+__global__ void copy(int n, T *source, T *destination) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x;
+
+    for (int i = index; i < n; i += stride) {
+        destination[i] = source[i];
+    }
+}
+
+template<typename T>
+__global__ void step(int n, T *current, T *previous, int wrap, int start, double epsilon) { // TODO perf
+    int index = start + blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x;
+
+    for (int i = index; i < n; i += stride) {
+        if (previous[i] != 0.0 && previous[i] != 100.0) { // TODO correctness, perf
+            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
+        }
+        if (fabs(current[i] - previous[i]) > epsilon) d_finished = false; // TODO perf
+    }
+}
+
+template<typename T>
 GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader)
         :ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
 
@@ -61,29 +84,6 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
     }
 
     std::cout << "total time " << timeMs() - startTime;
-}
-
-template<typename T>
-__global__ void copy(int n, T *source, T *destination) {
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
-    int stride = blockDim.x * gridDim.x;
-
-    for (int i = index; i < n; i += stride) {
-        destination[i] = source[i];
-    }
-}
-
-template<typename T>
-__global__ void step(int n, T *current, T *previous, int wrap, int start, double epsilon) { // TODO perf
-    int index = start + blockIdx.x * blockDim.x + threadIdx.x;
-    int stride = blockDim.x * gridDim.x;
-
-    for (int i = index; i < n; i += stride) {
-        if (previous[i] != 0.0 && previous[i] != 100.0) { // TODO correctness, perf
-            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
-        }
-        if (fabs(current[i] - previous[i]) > epsilon) d_finished = false; // TODO perf
-    }
 }
 
 template<typename T>
