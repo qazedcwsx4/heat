@@ -3,7 +3,9 @@
 //
 
 #include <gpu_computation_unit.cuh>
+#include <iostream>
 #include "computation.h"
+#include "util.h"
 
 template<typename T>
 Computation<T>::Computation(Grid<T> &grid, std::vector<ComputationUnit<T>> computationUnits):

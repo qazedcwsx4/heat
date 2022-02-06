@@ -1,14 +1,16 @@
 #include <grid.cuh>
 #include <grid_operations.h>
 #include <string>
+#include <iostream>
 #include "output/bmp_converter.h"
 #include "computation/computation.h"
+#include "util.h"
 
 #define SIZE_X 400
 #define SIZE_Y 400
 
 int main() {
-    Grid grid = Grid<float>::newManaged(SIZE_X, SIZE_Y);
+    Grid<float> grid = Grid<float>::newManaged(SIZE_X, SIZE_Y);
     setupTest(grid);
 
     Computation<float>::newHybridComputation(grid);

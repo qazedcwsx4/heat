@@ -189,7 +189,9 @@ Color hsvToColor(float h, float s, float v) {
 }
 
 int convert(const std::string &input, const std::string &output) {
-    auto[min, max] = getMinMax(input);
+    auto minMax = getMinMax(input);
+    auto min = std::get<0>(minMax);
+    auto max = std::get<1>(minMax);
 
     std::ifstream inputFile;
     inputFile.open(input.c_str());
