@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.17)
 project(heat_synchronisation CXX)
 
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.cu src/*.h)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 

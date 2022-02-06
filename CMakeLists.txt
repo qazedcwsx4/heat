@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(heat CXX CUDA)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 message("compiler is ${CMAKE_CXX_COMPILER_ID}")
 message("default debug flags ${CMAKE_CXX_FLAGS_DEBUG}")
