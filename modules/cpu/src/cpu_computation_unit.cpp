@@ -37,14 +37,7 @@ void CpuComputationUnit<T>::doWork(int thread) {
         }
         this->barrier.synchronise();
 
-        // GPU here
-
-        this->barrier.synchronise();
-
         finished = true;
-
-        internalStep(thread);
-        this->barrier.synchronise();
 
         if (thread == 0) {
             iterations++;
@@ -53,6 +46,9 @@ void CpuComputationUnit<T>::doWork(int thread) {
                 iterations_print = 2 * iterations_print;
             }
         }
+
+        internalStep(thread);
+        this->barrier.synchronise();
     }
 }
 

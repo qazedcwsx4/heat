@@ -54,11 +54,6 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
             iterations_print = 2 * iterations_print;
         }
 
-        cudaDeviceSynchronize();
-        barrier.synchronise();
-
-        // CPU HERE
-
         cudaMemcpyFromSymbol(&h_finished, d_finished, sizeof(bool));
 
         cudaDeviceSynchronize();
