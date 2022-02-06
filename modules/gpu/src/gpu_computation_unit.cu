@@ -49,7 +49,7 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
     cudaDeviceProp prop;
     cudaGetDeviceProperties(&prop, 0);
 
-    printf("Device name: %s\n", prop.name);
+    std::cout << "Device name: " << prop.name << std::endl;
 
 
     for (int i = 0; i < 1000; ++i) {
@@ -65,19 +65,11 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
 
         step<<<stepBlockCount, BLOCK_SIZE>>>(chunkStart + chunkSize, grid.raw(), previous.raw(), grid.sizeY, chunkStart, EPSILON);
 
-        iterations++;
-        if (iterations == iterations_print) {
-            std::cout << "  " << std::setw(8) << iterations << "\n";
-            iterations_print = 2 * iterations_print;
-        }
-
         cudaMemcpyFromSymbol(&h_finished, d_finished, sizeof(bool));
 
         cudaDeviceSynchronize();
         barrier.synchronise();
     }
-
-    std::cout << "total time " << timeMs() - startTime;
 }
 
 template<typename T>
