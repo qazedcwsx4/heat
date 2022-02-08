@@ -5,6 +5,8 @@
 #ifndef HEAT_GRID_CUH
 #define HEAT_GRID_CUH
 
+#include <cuda_runtime_api.h>
+
 template <typename T>
 class Grid {
 private:
@@ -41,11 +43,11 @@ public:
 
     GridInner<T> operator[](int x);
 
-    T *raw();
+    __device__ __host__ T *raw();
 
     void swapBuffers(Grid &other);
 
-    bool isBorder(int i);
+    __device__ __host__ bool isBorder(int i);
 
     ~Grid();
 };

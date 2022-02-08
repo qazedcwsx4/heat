@@ -54,7 +54,9 @@ Grid<T> Grid<T>::newManaged(int sizeX, int sizeY) {
     return {true, sizeX, sizeY};
 }
 
+
 template <typename T>
+__device__ __host__
 T *Grid<T>::raw() {
     return field;
 }
@@ -67,6 +69,7 @@ void Grid<T>::swapBuffers(Grid<T> &other) {
 }
 
 template<typename T>
+__device__ __host__
 bool Grid<T>::isBorder(int i) {
     if (i < sizeX || i >= totalSize - sizeX) return true;
     if (i % sizeY == 0 || (i + 1) % sizeY == 0) return true;

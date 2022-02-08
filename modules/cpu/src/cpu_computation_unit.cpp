@@ -3,10 +3,7 @@
 //
 
 #include "../include/cpu_computation_unit.h"
-#include <iomanip>
-#include <iostream>
 #include <cmath>
-#include <chrono>
 
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
@@ -25,10 +22,6 @@ CpuComputationUnit<T>::~CpuComputationUnit() {
 
 template<typename T>
 void CpuComputationUnit<T>::doWork(int thread) {
-    int iterations = 0;
-    int iterations_print = 1;
-    auto start = std::chrono::high_resolution_clock::now();
-
     finished = false;
 
     for (int i = 0; i < 1000; ++i) {
@@ -39,16 +32,6 @@ void CpuComputationUnit<T>::doWork(int thread) {
         this->barrier.synchronise();
 
         finished = true;
-
-        if (thread == 0) {
-            iterations++;
-            if (iterations == iterations_print) {
-                auto end = std::chrono::high_resolution_clock::now();
-                std::cout << "  " << std::setw(8) << iterations << " "
-                          << std::chrono::duration<double, std::milli>(end - start).count() << "\n";
-                iterations_print = 2 * iterations_print;
-            }
-        }
 
         internalStep(thread);
         this->barrier.synchronise();

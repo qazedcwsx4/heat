@@ -12,7 +12,9 @@ int main() {
     setupTest(grid);
 
     auto start = std::chrono::high_resolution_clock::now();
-    Computation<float>::newCpuComputation(grid);
+    //Computation<float>::newCpuComputation(grid);
+    //Computation<float>::newGpuComputation(grid);
+    Computation<float>::newHybridComputation(grid);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::cout << "TIME: " << std::chrono::duration<double, std::milli>(end - start).count();

@@ -5,9 +5,8 @@
 #include <iostream>
 #include "../include/gpu_computation_unit.cuh"
 #include "consts.h"
+#include "grid_operations.h"
 #include <cuda_runtime_api.h>
-#include <cuda_device_runtime_api.h>
-#include <iomanip>
 
 __device__
 bool d_finished;  // TODO perf
@@ -23,9 +22,12 @@ __global__ void copy(int n, T *source, T *destination) {
 }
 
 template<typename T>
-__global__ void step(int n, T *current, T *previous, int wrap, int start, double epsilon) { // TODO perf
+__global__ void step(int n, Grid<T> *current_grid, Grid<T> *previous_grid, int wrap, int start, double epsilon) { // TODO perf
     int index = start + blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
+
+    auto current = current_grid->raw();
+    auto previous = previous_grid->raw();
 
     for (int i = index; i < n; i += stride) {
         if (previous[i] != 0.0 && previous[i] != 100.0) { // TODO correctness, perf
@@ -54,6 +56,8 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
 
     for (int i = 0; i < 1000; ++i) {
         if (leader) {
+            // czemu to nie dziala??
+            //grid.swapBuffers(previous);
             copy<<<copyBlockCount, BLOCK_SIZE>>>(grid.totalSize, grid.raw(), previous.raw());
         }
 
@@ -63,7 +67,7 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
         h_finished = true;
         cudaMemcpyToSymbol(d_finished, &h_finished, sizeof(bool));
 
-        step<<<stepBlockCount, BLOCK_SIZE>>>(chunkStart + chunkSize, grid.raw(), previous.raw(), grid.sizeY, chunkStart, EPSILON);
+        step<<<stepBlockCount, BLOCK_SIZE>>>(chunkStart + chunkSize, &grid, &previous, grid.sizeY, chunkStart, EPSILON);
 
         cudaMemcpyFromSymbol(&h_finished, d_finished, sizeof(bool));
 
