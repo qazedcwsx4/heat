@@ -12,7 +12,6 @@
 template<typename T>
 class CpuComputationUnit : public ComputationUnit<T> {
 private:
-    bool finished = false;
     std::thread threads[THREAD_COUNT];
 
     void doWork(int thread);

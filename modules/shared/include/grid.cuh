@@ -45,9 +45,9 @@ public:
 
     void swapBuffers(Grid &other);
 
-    __device__ __host__ bool isBorder(int i);
+    bool isBorder(int i);
 
-    __device__ __host__ T *raw();
+    T* raw();
 
     ~Grid();
 };

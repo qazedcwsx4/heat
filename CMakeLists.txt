@@ -35,8 +35,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${heat_gpu_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} heat_synchronisation)
 target_link_libraries(${PROJECT_NAME} heat_shared)
-target_link_libraries(${PROJECT_NAME} heat_cpu)
 target_link_libraries(${PROJECT_NAME} heat_gpu)
+target_link_libraries(${PROJECT_NAME} heat_cpu)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_ARCHITECTURES "61")
 

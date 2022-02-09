@@ -3,7 +3,6 @@
 //
 
 #include "../include/cpu_computation_unit.h"
-#include <cmath>
 
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
@@ -22,16 +21,12 @@ CpuComputationUnit<T>::~CpuComputationUnit() {
 
 template<typename T>
 void CpuComputationUnit<T>::doWork(int thread) {
-    finished = false;
-
     for (int i = 0; i < 1000; ++i) {
         // buffers are swapped by overseer
         if (this->leader && thread == 0) {
             this->grid.swapBuffers(this->previous);
         }
         this->barrier.synchronise();
-
-        finished = true;
 
         internalStep(thread);
         this->barrier.synchronise();
@@ -52,7 +47,6 @@ void CpuComputationUnit<T>::internalStep(int thread) {
         } else {
             current[i] = previous[i];
         }
-        if (fabs(current[i] - previous[i]) > EPSILON) finished = false;
     }
 }
 

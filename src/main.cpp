@@ -5,19 +5,45 @@
 #include "output/bmp_converter.h"
 #include "computation/computation.h"
 #include <chrono>
+#include <unordered_map>
 
+template<typename T>
+using ComputationFunctionPtr = Computation<T>(*)(Grid<T> &grid);
+
+enum class ComputationType : int {
+    CPU_COMPUTATION,
+    GPU_COMPUTATION,
+    HYBRID_COMPUTATION,
+
+    // This must be the last element!
+    COMPUTATION_TYPE_COUNT
+};
+
+template<typename T>
+const std::unordered_map<ComputationType, std::pair<ComputationFunctionPtr<T>, std::string>> availableComputationTypes = {
+        {ComputationType::CPU_COMPUTATION, std::make_pair(Computation<T>::newCpuComputation, "CPU_COMPUTATION")},
+        {ComputationType::GPU_COMPUTATION, std::make_pair(Computation<T>::newGpuComputation, "GPU_COMPUTATION")},
+        {ComputationType::HYBRID_COMPUTATION, std::make_pair(Computation<T>::newHybridComputation, "GPU_COMPUTATION")},
+};
 
 int main() {
+    //////////////////// Modify only this line /////////////////////////////////////////////////////////////////////////
+    const ComputationType computation_type = ComputationType::HYBRID_COMPUTATION;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const auto computationPair = availableComputationTypes<float>.at(computation_type);
+    const auto computationFunction = computationPair.first;
+    const auto computationName = computationPair.second;
+
     Grid<float> grid = Grid<float>::newManaged(SIZE_X, SIZE_Y);
     setupTest(grid);
 
     auto start = std::chrono::high_resolution_clock::now();
-    //Computation<float>::newCpuComputation(grid);
-    //Computation<float>::newGpuComputation(grid);
-    Computation<float>::newHybridComputation(grid);
+    computationFunction(grid);
     auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "TIME: " << std::chrono::duration<double, std::milli>(end - start).count();
+    std::cout << "GRID: [" << grid.sizeX << ", " << grid.sizeY << "]" << std::endl;
+    std::cout << computationName << " TIME: " << std::chrono::duration<double, std::milli>(end - start).count();
 
     saveToFile(grid, "grid.txt");
     convert("grid.txt", "heatmap.bmp");
