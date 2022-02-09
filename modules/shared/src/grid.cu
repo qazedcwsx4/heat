@@ -54,7 +54,6 @@ Grid<T> Grid<T>::newManaged(int sizeX, int sizeY) {
     return {true, sizeX, sizeY};
 }
 
-
 template <typename T>
 __device__ __host__
 T *Grid<T>::raw() {

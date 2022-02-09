@@ -38,6 +38,7 @@ target_link_libraries(${PROJECT_NAME} heat_shared)
 target_link_libraries(${PROJECT_NAME} heat_cpu)
 target_link_libraries(${PROJECT_NAME} heat_gpu)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_ARCHITECTURES "61")
 
 #message("partial build commencing")
 #message("looking for header files in ${CMAKE_SOURCE_DIR}/include")

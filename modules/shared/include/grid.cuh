@@ -43,11 +43,11 @@ public:
 
     GridInner<T> operator[](int x);
 
-    __device__ __host__ T *raw();
-
     void swapBuffers(Grid &other);
 
     __device__ __host__ bool isBorder(int i);
+
+    __device__ __host__ T *raw();
 
     ~Grid();
 };

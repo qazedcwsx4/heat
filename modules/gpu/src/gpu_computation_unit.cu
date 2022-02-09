@@ -6,6 +6,7 @@
 #include "../include/gpu_computation_unit.cuh"
 #include "consts.h"
 #include "grid_operations.h"
+#include <cuda_device_runtime_api.h>
 #include <cuda_runtime_api.h>
 
 __device__
@@ -26,8 +27,10 @@ __global__ void step(int n, Grid<T> *current_grid, Grid<T> *previous_grid, int w
     int index = start + blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
-    auto current = current_grid->raw();
-    auto previous = previous_grid->raw();
+    T* current = current_grid->raw();
+    T* previous = previous_grid->raw();
+
+    current_grid->isBorder(1);
 
     for (int i = index; i < n; i += stride) {
         if (previous[i] != 0.0 && previous[i] != 100.0) { // TODO correctness, perf
