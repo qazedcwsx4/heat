@@ -5,8 +5,6 @@
 #ifndef HEAT_GRID_CUH
 #define HEAT_GRID_CUH
 
-#include <cuda_runtime_api.h>
-
 template <typename T>
 class Grid {
 private:

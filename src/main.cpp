@@ -43,7 +43,7 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
 
     std::cout << "GRID: [" << grid.sizeX << ", " << grid.sizeY << "]" << std::endl;
-    std::cout << computationName << " TIME: " << std::chrono::duration<double, std::milli>(end - start).count();
+    std::cout << computationName << " TIME: " << std::chrono::duration<double, std::milli>(end - start).count() << std::endl;
 
     saveToFile(grid, "grid.txt");
     convert("grid.txt", "heatmap.bmp");
