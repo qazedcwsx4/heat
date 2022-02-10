@@ -21,7 +21,7 @@ CpuComputationUnit<T>::~CpuComputationUnit() {
 
 template<typename T>
 void CpuComputationUnit<T>::doWork(int thread) {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < ITERATION_COUNT; ++i) {
         // buffers are swapped by overseer
         if (this->leader && thread == 0) {
             this->grid.swapBuffers(this->previous);

@@ -23,15 +23,15 @@ template<typename T>
 const std::unordered_map<ComputationType, std::pair<ComputationFunctionPtr<T>, std::string>> availableComputationTypes = {
         {ComputationType::CPU_COMPUTATION, std::make_pair(Computation<T>::newCpuComputation, "CPU_COMPUTATION")},
         {ComputationType::GPU_COMPUTATION, std::make_pair(Computation<T>::newGpuComputation, "GPU_COMPUTATION")},
-        {ComputationType::HYBRID_COMPUTATION, std::make_pair(Computation<T>::newHybridComputation, "GPU_COMPUTATION")},
+        {ComputationType::HYBRID_COMPUTATION, std::make_pair(Computation<T>::newHybridComputation, "HYBRID_COMPUTATION")},
 };
 
 int main() {
     //////////////////// Modify only this line /////////////////////////////////////////////////////////////////////////
-    const ComputationType computation_type = ComputationType::HYBRID_COMPUTATION;
+    const ComputationType computationType = ComputationType::GPU_COMPUTATION;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const auto computationPair = availableComputationTypes<float>.at(computation_type);
+    const auto& computationPair = availableComputationTypes<float>.at(computationType);
     const auto computationFunction = computationPair.first;
     const auto computationName = computationPair.second;
 

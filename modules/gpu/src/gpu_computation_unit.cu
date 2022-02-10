@@ -37,7 +37,7 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
 
     const int stepBlockCount = (chunkSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < ITERATION_COUNT; ++i) {
         if (leader) {
             grid.swapBuffers(previous);
         }
