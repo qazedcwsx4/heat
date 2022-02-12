@@ -26,6 +26,7 @@ private:
 
     T *field;
 
+
     Grid<T>(bool isManaged, int sizeX, int sizeY);
 
 public:
@@ -35,6 +36,8 @@ public:
 
     const bool isManaged;
 
+    char* borderCache;
+
     static Grid<T> newCpu(int sizeX, int sizeY);
 
     static Grid<T> newManaged(int sizeX, int sizeY);
@@ -43,7 +46,8 @@ public:
 
     void swapBuffers(Grid &other);
 
-    bool isBorder(int i);
+    char isBorder(int i);
+    char isBorderCached(int i);
 
     T* raw();
 

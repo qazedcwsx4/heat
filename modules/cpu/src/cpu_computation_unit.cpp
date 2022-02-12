@@ -42,7 +42,7 @@ void CpuComputationUnit<T>::internalStep(int thread) {
     int finish = this->chunkStart + this->chunkSize;
 
     for (int i = start; i < finish; i += THREAD_COUNT) {
-        if (!this->grid.isBorder(i)) {
+        if (!this->grid.isBorderCached(i)) {
             current[i] = (previous[i - 1] + previous[i + 1] + previous[i - this->grid.sizeY] + previous[i + this->grid.sizeY]) / 4.0;
         } else {
             current[i] = previous[i];

@@ -23,6 +23,8 @@ Grid<T>::Grid(bool isManaged, int sizeX, int sizeY) :
         sizeX{sizeX},
         sizeY{sizeY},
         totalSize(sizeX * sizeY) {
+
+    borderCache = new char[sizeX * sizeY]{0};
     if (isManaged) {
         cudaMallocManaged((void **) (&field), sizeX * sizeY * sizeof(T));
     } else {
@@ -37,6 +39,7 @@ Grid<T>::GridInner<T> Grid<T>::operator[](int x) {
 
 template <typename T>
 Grid<T>::~Grid() {
+    delete[] borderCache;
     if (isManaged) {
         cudaFree(field);
     } else {
@@ -67,10 +70,19 @@ void Grid<T>::swapBuffers(Grid<T> &other) {
 }
 
 template<typename T>
-bool Grid<T>::isBorder(int i) {
-    if (i < sizeX || i >= totalSize - sizeX) return true;
-    if (i % sizeY == 0 || (i + 1) % sizeY == 0) return true;
-    return false;
+char Grid<T>::isBorder(int i) {
+    if (i < sizeX || i >= totalSize - sizeX) return 1;
+    if (i % sizeY == 0 || (i + 1) % sizeY == 0) return 1;
+    return -1;
+}
+
+template<typename T>
+char Grid<T>::isBorderCached(int i) {
+    if (this->borderCache[i] == 0)
+    {
+        this->borderCache[i] = this->isBorder(i);
+    }
+    return this->borderCache[i];
 }
 
 template class Grid<float>;
