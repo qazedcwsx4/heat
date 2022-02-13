@@ -28,7 +28,7 @@ const std::unordered_map<ComputationType, std::pair<ComputationFunctionPtr<T>, s
 
 int main() {
     //////////////////// Modify only this line /////////////////////////////////////////////////////////////////////////
-    const ComputationType computationType = ComputationType::GPU_COMPUTATION;
+    const ComputationType computationType = ComputationType::CPU_COMPUTATION;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const auto& computationPair = availableComputationTypes<float>.at(computationType);
@@ -45,8 +45,8 @@ int main() {
     std::cout << "GRID: [" << grid.sizeX << ", " << grid.sizeY << "]" << std::endl;
     std::cout << computationName << " TIME: " << std::chrono::duration<double, std::milli>(end - start).count() << std::endl;
 
-    saveToFile(grid, "grid.txt");
-    convert("grid.txt", "heatmap.bmp");
+    //saveToFile(grid, "grid.txt");
+    //convert("grid.txt", "heatmap.bmp");
 
     return 0;
 }
