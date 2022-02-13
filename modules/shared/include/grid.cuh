@@ -25,6 +25,7 @@ private:
     };
 
     T *field;
+    T **borderlessField;
 
     Grid<T>(bool isManaged, int sizeX, int sizeY);
 
@@ -32,6 +33,7 @@ public:
     const int sizeX;
     const int sizeY;
     const int totalSize;
+    const int borderlessSize;
 
     const bool isManaged;
 
@@ -45,7 +47,10 @@ public:
 
     bool isBorder(int i);
 
+    Grid<T> copy();
+
     T* raw();
+    T** borderlessRaw();
 
     ~Grid();
 };

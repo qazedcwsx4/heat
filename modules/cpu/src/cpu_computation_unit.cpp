@@ -35,18 +35,14 @@ void CpuComputationUnit<T>::doWork(int thread) {
 
 template<typename T>
 void CpuComputationUnit<T>::internalStep(const int thread) {
-    auto const previous = this->previous.raw();
-    auto current = this->grid.raw();
+    T** previous = this->previous.borderlessRaw();
+    T** current = this->grid.borderlessRaw();
 
     const int start =  this->chunkStart + (this->chunkSize * thread) / THREAD_COUNT;
     const int finish = this->chunkStart + (this->chunkSize * (thread + 1)) / THREAD_COUNT;
 
     for (int i = start; i < finish; i += 1) {
-        if (!this->grid.isBorder(i)) {
-            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - this->grid.sizeY] + previous[i + this->grid.sizeY]) / 4.0;
-        } else {
-            current[i] = previous[i];
-        }
+        *current[i] = (*(previous[i] - 1) + *(previous[i] + 1) + *(previous[i] - this->grid.sizeY) + *(previous[i] + this->grid.sizeY)) / 4.0;
     }
 }
 

@@ -22,11 +22,22 @@ Grid<T>::Grid(bool isManaged, int sizeX, int sizeY) :
         isManaged{isManaged},
         sizeX{sizeX},
         sizeY{sizeY},
-        totalSize(sizeX * sizeY) {
+        totalSize(sizeX * sizeY),
+        borderlessSize((sizeX - 2) * (sizeY - 2)){
     if (isManaged) {
-        cudaMallocManaged((void **) (&field), sizeX * sizeY * sizeof(T));
+        cudaMallocManaged((void **) (&field), totalSize * sizeof(T));
+        cudaMallocManaged((void **) (&borderlessField), borderlessSize * sizeof(T*));
     } else {
-        field = new T[sizeX * sizeY];
+        field = new T[totalSize];
+        borderlessField = new T*[borderlessSize];
+    }
+
+    int j = 0;
+    for(int i = 0; i < totalSize; i++) {
+        if(!isBorder(i)) {
+            borderlessField[j] = &field[i];
+            j++;
+        }
     }
 }
 
@@ -39,8 +50,10 @@ template <typename T>
 Grid<T>::~Grid() {
     if (isManaged) {
         cudaFree(field);
+        cudaFree(borderlessField);
     } else {
         delete[] field;
+        delete[] borderlessField;
     }
 }
 
@@ -60,10 +73,31 @@ T* Grid<T>::raw() {
 }
 
 template <typename T>
+T** Grid<T>::borderlessRaw() {
+    return borderlessField;
+}
+
+template <typename T>
+Grid<T> Grid<T>::copy(){
+    Grid<T> copyGrid = Grid<T>(this->isManaged, this->sizeX, this->sizeY);
+
+    for (int i = 0; i < this->totalSize; i++)
+    {
+        copyGrid.raw()[i] = this->field[i];
+    }
+
+    return copyGrid;
+}
+
+template <typename T>
 void Grid<T>::swapBuffers(Grid<T> &other) {
     T *tempField = this->field;
     this->field = other.field;
     other.field = tempField;
+
+    T** tempBorderlessField = this->borderlessField;
+    this->borderlessField = other.borderlessField;
+    other.borderlessField = tempBorderlessField;
 }
 
 template<typename T>

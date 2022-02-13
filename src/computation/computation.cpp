@@ -12,12 +12,12 @@ Computation<T>::Computation(Grid<T> &grid, std::vector<ComputationUnit<T>> compu
 
 template<typename T>
 Computation<T> Computation<T>::newCpuComputation(Grid<T> &grid) {
-    Grid<T> previous = Grid<T>::newCpu(grid.sizeX, grid.sizeY);
+    Grid<T> previous = grid.copy();
 
     int threads = THREAD_COUNT;
     Synchronisation barrier(threads);
 
-    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize, true);
+    auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, 0, grid.borderlessSize, true);
 
     cu1.await();
 
@@ -26,26 +26,26 @@ Computation<T> Computation<T>::newCpuComputation(Grid<T> &grid) {
 
 template<typename T>
 Computation<T> Computation<T>::newGpuComputation(Grid<T> &grid) {
-    Grid<T> previous = Grid<T>::newManaged(grid.sizeX, grid.sizeY);
+    Grid<T> previous = grid.copy();
 
     int threads = 1;
     Synchronisation barrier(threads);
 
-    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, grid.totalSize, true)});
+    return Computation<T>(grid, {GpuComputationUnit<T>(grid, previous, barrier, 0, grid.borderlessSize, true)});
 }
 
 template<typename T>
 Computation<T> Computation<T>::newHybridComputation(Grid<T> &grid) {
-    Grid<T> previous = Grid<T>::newManaged(grid.sizeX, grid.sizeY);
+    Grid<T> previous = grid.copy();
 
     int threads = THREAD_COUNT + 1;
     Synchronisation barrier(threads);
 
     const int cpuChunkStart = 0;
-    const int cpuChunkSize = grid.totalSize / 2;
+    const int cpuChunkSize = grid.borderlessSize / 2;
 
     const int gpuChunkStart = cpuChunkStart + cpuChunkSize;
-    const int gpuChunkSize = grid.totalSize - cpuChunkSize;
+    const int gpuChunkSize = grid.borderlessSize - cpuChunkSize;
 
     auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, cpuChunkStart, cpuChunkSize, false);
     auto cu2 = GpuComputationUnit<T>(grid, previous, barrier, gpuChunkStart, gpuChunkSize, true);

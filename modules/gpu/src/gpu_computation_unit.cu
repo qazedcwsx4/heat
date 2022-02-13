@@ -8,27 +8,16 @@
 #include <cuda_device_runtime_api.h>
 #include <cuda_runtime_api.h>
 
-__device__ bool isBorder(const int i, const int sizeX, const int sizeY, const int totalSize)
-{
-    if (i < sizeX || i >= totalSize - sizeX) return true;
-    if (i % sizeY == 0 || (i + 1) % sizeY == 0) return true;
-    return false;
-}
-
 template<typename T>
-__global__ void step(const int n, T *current, const T *previous,
-                     const int sizeX, const int sizeY, const int totalSize,
-                     const int wrap, const int start, const double epsilon) {
+__global__ void step(const int n, T **current, T **previous,
+                     const int sizeY,
+                     const int wrap, const int start) {
     int index = start + blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
     for (int repeat = 0; repeat < GPU_POWERCAP; repeat++) {
         for (int i = index; i < n; i += stride) {
-            if (!isBorder(i, sizeX, sizeY, totalSize)) {
-                current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
-            } else {
-                current[i] = previous[i];
-            }
+            *current[i] = (*(previous[i] - 1) + *(previous[i] + 1) + *(previous[i] - sizeY) + *(previous[i] + sizeY)) / 4.0;
         }
     }
 }
@@ -48,9 +37,9 @@ GpuComputationUnit<T>::GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Sync
         barrier.synchronise();
 
         step<<<stepBlockCount, BLOCK_SIZE>>>(chunkStart + chunkSize,
-                                             grid.raw(), previous.raw(),
-                                             grid.sizeX, grid.sizeY, grid.totalSize,
-                                             grid.sizeY, chunkStart, EPSILON);
+                                             grid.borderlessRaw(), previous.borderlessRaw(),
+                                             grid.sizeY,
+                                             grid.sizeY, chunkStart);
 
         cudaDeviceSynchronize();
         barrier.synchronise();
