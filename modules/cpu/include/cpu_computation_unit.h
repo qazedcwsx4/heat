@@ -19,7 +19,7 @@ private:
     void internalStep(int thread);
 
 public:
-    CpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader);
+    CpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, long long chunkStart, long long chunkSize, bool leader);
 
     void await();
 

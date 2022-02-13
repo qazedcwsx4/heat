@@ -41,11 +41,11 @@ Computation<T> Computation<T>::newHybridComputation(Grid<T> &grid) {
     int threads = THREAD_COUNT + 1;
     Synchronisation barrier(threads);
 
-    const int cpuChunkStart = 0;
-    const int cpuChunkSize = grid.borderlessSize / 2;
+    const long long cpuChunkStart = 0;
+    const long long cpuChunkSize = 9 * (grid.borderlessSize / 100);
 
-    const int gpuChunkStart = cpuChunkStart + cpuChunkSize;
-    const int gpuChunkSize = grid.borderlessSize - cpuChunkSize;
+    const long long gpuChunkStart = cpuChunkStart + cpuChunkSize;
+    const long long gpuChunkSize = grid.borderlessSize - cpuChunkSize;
 
     auto cu1 = CpuComputationUnit<T>(grid, previous, barrier, cpuChunkStart, cpuChunkSize, false);
     auto cu2 = GpuComputationUnit<T>(grid, previous, barrier, gpuChunkStart, gpuChunkSize, true);

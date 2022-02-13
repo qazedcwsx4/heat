@@ -7,7 +7,7 @@
 template<typename T>
 CpuComputationUnit<T>::CpuComputationUnit(Grid<T> &grid, Grid<T> &previous,
                                           Synchronisation barrier,
-                                          int chunkStart, int chunkSize, bool leader):
+                                          long long chunkStart, long long chunkSize, bool leader):
         ComputationUnit<T>(grid, previous, barrier, chunkStart, chunkSize, leader) {
     for (int i = 0; i < THREAD_COUNT; i++) {
         threads[i] = std::thread([=]() { doWork(i); });
@@ -38,10 +38,10 @@ void CpuComputationUnit<T>::internalStep(const int thread) {
     T** previous = this->previous.borderlessRaw();
     T** current = this->grid.borderlessRaw();
 
-    const int start =  this->chunkStart + (this->chunkSize * thread) / THREAD_COUNT;
-    const int finish = this->chunkStart + (this->chunkSize * (thread + 1)) / THREAD_COUNT;
+    const long long start =  this->chunkStart + ((this->chunkSize / THREAD_COUNT) * thread);
+    const long long finish = this->chunkStart + ((this->chunkSize / THREAD_COUNT) * (thread + 1));
 
-    for (int i = start; i < finish; i += 1) {
+    for (long long i = start; i < finish; i += 1) {
         *current[i] = (*(previous[i] - 1) + *(previous[i] + 1) + *(previous[i] - this->grid.sizeY) + *(previous[i] + this->grid.sizeY)) / 4.0;
     }
 }

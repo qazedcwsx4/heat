@@ -13,7 +13,7 @@ private:
     bool finished = false;
 
 public:
-    GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, int chunkStart, int chunkSize, bool leader);
+    GpuComputationUnit(Grid<T> &grid, Grid<T> &previous, Synchronisation barrier, const long long chunkStart, const long long chunkSize, bool leader);
 
     ~GpuComputationUnit();
 };
