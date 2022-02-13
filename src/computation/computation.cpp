@@ -42,7 +42,7 @@ Computation<T> Computation<T>::newHybridComputation(Grid<T> &grid) {
     Synchronisation barrier(threads);
 
     const int cpuChunkStart = 0;
-    const int cpuChunkSize = grid.sizeX;
+    const int cpuChunkSize = grid.totalSize / 2;
 
     const int gpuChunkStart = cpuChunkStart + cpuChunkSize;
     const int gpuChunkSize = grid.totalSize - cpuChunkSize;

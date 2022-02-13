@@ -11,4 +11,6 @@
 
 #define ITERATION_COUNT 1000
 
+#define GPU_POWERCAP 60
+
 #endif //HEAT_CONSTS_H

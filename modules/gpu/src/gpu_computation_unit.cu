@@ -22,11 +22,13 @@ __global__ void step(const int n, T *current, const T *previous,
     int index = start + blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
-    for (int i = index; i < n; i += stride) {
-        if (!isBorder(i, sizeX, sizeY, totalSize)) {
-            current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
-        } else {
-            current[i] = previous[i];
+    for (int p = 0; p < GPU_POWERCAP; p++) {
+        for (int i = index; i < n; i += stride) {
+            if (!isBorder(i, sizeX, sizeY, totalSize)) {
+                current[i] = (previous[i - 1] + previous[i + 1] + previous[i - wrap] + previous[i + wrap]) / 4.0;
+            } else {
+                current[i] = previous[i];
+            }
         }
     }
 }
